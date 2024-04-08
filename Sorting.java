@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Sorting
 {
     public Node sortedInsert(Node sorted, Node newNode) { //helper method
-        if (sorted == null || sorted.data >= newNode.data) {
+        if (sorted == null || sorted.data >= newNode.data) { 
             newNode.next = sorted;
             return newNode;
         } else {
@@ -21,8 +21,51 @@ public class Sorting
             return sorted;
         }
     }
+     
+    public void merge(File outFile, File leftFile, File rightFile, int h, int m) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
+        BufferedReader leftReader = new BufferedReader(new FileReader(leftFile));
+        BufferedReader rightReader = new BufferedReader(new FileReader(rightFile));
 
-    void insertionsortArray(int n, File file)  throws IOException{
+        String leftLine = leftReader.readLine();
+        String rightLine = rightReader.readLine();
+
+        while (leftLine != null && rightLine != null) {
+            int leftValue = Integer.parseInt(leftLine);
+            int rightValue = Integer.parseInt(rightLine);
+
+            if (leftValue <= rightValue) {
+                    writer.write(Integer.toString(leftValue));
+                    writer.newLine();
+                    leftLine = leftReader.readLine();
+            } 
+            else {
+                writer.write(Integer.toString(rightValue));
+                writer.newLine();
+                rightLine = rightReader.readLine();
+            }
+        }
+
+        // Write remaining lines from leftFile
+        while (leftLine != null) {
+            writer.write(leftLine);
+            writer.newLine();
+            leftLine = leftReader.readLine();
+        }
+
+        // Write remaining lines from rightFile
+        while (rightLine != null) {
+            writer.write(rightLine);
+            writer.newLine();
+            rightLine = rightReader.readLine();
+        }
+
+        writer.close();
+        leftReader.close();
+        rightReader.close();
+    }
+
+    public void insertionsortArray(int n, File file)  throws IOException{
 
         FileReader fr = new FileReader(file); //create file reader
         BufferedReader br = new BufferedReader(fr); //create a buffer reader
@@ -57,7 +100,7 @@ public class Sorting
         bw.close(); //close buffer writer
     }
 
-    void insertionsortLinkedList(int n, File file) throws IOException{
+    public void insertionsortLinkedList(int n, File file) throws IOException{
         FileReader fr = new FileReader(file); //create file reader
         BufferedReader br = new BufferedReader(fr); //create a buffer reader
 
@@ -68,7 +111,7 @@ public class Sorting
 
         br.close(); //close buffer reader
 
-        for(int i = 0; i < n; i++){
+        for(int i = 0; i < n; i++){ //insertion sort implementation
             if (S.head == null || S.head.next == null){
                 return;
             }
@@ -95,10 +138,50 @@ public class Sorting
 
     }
 
+    public void mergeSort(int n, File file) throws IOException{
+        if (n > 1) {
+            int h = n / 2;
+            int m = n - h;
 
-    
+            // Create temporary files for left and right halves, as well as app. file readers / writers
+            File leftFile = File.createTempFile("left", ".txt");
+            File rightFile = File.createTempFile("right", ".txt");
 
-    
+            BufferedWriter leftWriter = new BufferedWriter(new FileWriter(leftFile));
+            BufferedWriter rightWriter = new BufferedWriter(new FileWriter(rightFile));
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            // Split the original file into left and right halves
+            int count = 0;
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (count < h) {
+                    leftWriter.write(line);
+                    leftWriter.newLine();
+                } else {
+                    rightWriter.write(line);
+                    rightWriter.newLine();
+                }
+                count++;
+            }
+
+            leftWriter.close();
+            rightWriter.close();
+            br.close();
+
+            // Recursively sort left and right halves
+            mergeSort(h, leftFile);
+            mergeSort(m, rightFile);
+
+            // Merge the sorted halves
+            merge(file, leftFile, rightFile, h, m);
+
+            // Delete temporary files
+            leftFile.delete();
+            rightFile.delete();
+        }
+
+    }
 
     public static void main(String[] args) throws IOException{
         File file = new File("test.txt"); 
@@ -113,7 +196,7 @@ public class Sorting
         bReader.close();
 
         Sorting sorter = new Sorting();
-        sorter.insertionsortLinkedList(lines, file);
+        sorter.mergeSort(lines, file);
 
         FileReader sortedReader = new FileReader(file);
         BufferedReader sortedBReader = new BufferedReader(sortedReader);
