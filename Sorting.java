@@ -22,15 +22,16 @@ public class Sorting
         }
     }
      
-    public void merge(File outFile, File leftFile, File rightFile, int h, int m) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
+    public void merge(File outFile, File leftFile, File rightFile, int h, int m) throws IOException { //helper method
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outFile)); //create necessary objects
         BufferedReader leftReader = new BufferedReader(new FileReader(leftFile));
         BufferedReader rightReader = new BufferedReader(new FileReader(rightFile));
 
         String leftLine = leftReader.readLine();
         String rightLine = rightReader.readLine();
-
-        while (leftLine != null && rightLine != null) {
+        int i = 0;
+        int j = 0;
+        while (i < h && j < m) {
             int leftValue = Integer.parseInt(leftLine);
             int rightValue = Integer.parseInt(rightLine);
 
@@ -38,11 +39,13 @@ public class Sorting
                     writer.write(Integer.toString(leftValue));
                     writer.newLine();
                     leftLine = leftReader.readLine();
+                    i++;
             } 
             else {
                 writer.write(Integer.toString(rightValue));
                 writer.newLine();
                 rightLine = rightReader.readLine();
+                j++;
             }
         }
 
