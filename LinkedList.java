@@ -45,4 +45,13 @@ public class LinkedList {
 
         throw new IndexOutOfBoundsException("Index out of bounds");
     }
+
+    public Node getNext(Node currentNode) {
+        if (currentNode == null || currentNode.next == null) {
+            return null;
+        } else {
+            return currentNode.next;
+        }
+    }
+
 }

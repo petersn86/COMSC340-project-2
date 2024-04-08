@@ -5,7 +5,23 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Sorting{
+public class Sorting
+{
+    public Node sortedInsert(Node sorted, Node newNode) { //helper method
+        if (sorted == null || sorted.data >= newNode.data) {
+            newNode.next = sorted;
+            return newNode;
+        } else {
+            Node current = sorted;
+            while (current.next != null && current.next.data < newNode.data) {
+                current = current.next;
+            }
+            newNode.next = current.next;
+            current.next = newNode;
+            return sorted;
+        }
+    }
+
     void insertionsortArray(int n, File file)  throws IOException{
 
         FileReader fr = new FileReader(file); //create file reader
@@ -52,31 +68,21 @@ public class Sorting{
 
         br.close(); //close buffer reader
 
-        Node current = S.head.next; // Start from the second node
-        while (current != null) {
-            int key = current.data;
-            Node prev = current;
-            Node temp = S.head;
-    
-            // Find the correct position to insert the current node
-            while (temp != current && temp.data < key) {
-                prev = temp;
-                temp = temp.next;
+        for(int i = 0; i < n; i++){
+            if (S.head == null || S.head.next == null){
+                return;
             }
-    
-            if (temp != current) { // If the correct position is not the current position
-                prev.next = current.next;
-                current.next = temp;
-                if (temp == S.head) {
-                    S.head = current;
-                } else {
-                    prev.next = current;
-                }
-            } else { // If the correct position is the current position
-                current = current.next;
+            Node sorted = null;
+            Node current = S.head;
+            while (current != null) {
+                Node next = current.next;
+                sorted = sortedInsert(sorted, current);
+                current = next;
             }
+            S.head = sorted;
+
         }
-        
+
         FileWriter fw = new FileWriter(file); //create file writer
         BufferedWriter bw = new BufferedWriter(fw); //create buffer writer
 
@@ -88,6 +94,10 @@ public class Sorting{
         bw.close(); //close buffer writer
 
     }
+
+
+    
+
     
 
     public static void main(String[] args) throws IOException{
@@ -100,6 +110,7 @@ public class Sorting{
             lines++;
         }
         reader.close();
+        bReader.close();
 
         Sorting sorter = new Sorting();
         sorter.insertionsortLinkedList(lines, file);
@@ -111,6 +122,7 @@ public class Sorting{
             System.out.println(line);
         }
         sortedReader.close();
+        sortedBReader.close();
 
     }
 
