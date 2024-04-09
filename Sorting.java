@@ -23,7 +23,7 @@ public class Sorting
     }
      
     public void merge(File outFile, File leftFile, File rightFile, int h, int m) throws IOException { //helper method
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outFile)); //create necessary objects
+        //BufferedWriter writer = new BufferedWriter(new FileWriter(outFile)); //create necessary objects
         BufferedReader leftReader = new BufferedReader(new FileReader(leftFile));
         BufferedReader rightReader = new BufferedReader(new FileReader(rightFile));
 
@@ -36,14 +36,14 @@ public class Sorting
             int rightValue = Integer.parseInt(rightLine);
 
             if (leftValue <= rightValue) {
-                    writer.write(Integer.toString(leftValue));
-                    writer.newLine();
+                    //writer.write(Integer.toString(leftValue));
+                    //writer.newLine();
                     leftLine = leftReader.readLine();
                     i++;
             } 
             else {
-                writer.write(Integer.toString(rightValue));
-                writer.newLine();
+                //writer.write(Integer.toString(rightValue));
+                //writer.newLine();
                 rightLine = rightReader.readLine();
                 j++;
             }
@@ -51,19 +51,19 @@ public class Sorting
 
         // Write remaining lines from leftFile
         while (leftLine != null) {
-            writer.write(leftLine);
-            writer.newLine();
+            //writer.write(leftLine);
+            //writer.newLine();
             leftLine = leftReader.readLine();
         }
 
         // Write remaining lines from rightFile
         while (rightLine != null) {
-            writer.write(rightLine);
-            writer.newLine();
+            //writer.write(rightLine);
+            //writer.newLine();
             rightLine = rightReader.readLine();
         }
 
-        writer.close();
+        //writer.close();
         leftReader.close();
         rightReader.close();
     }
@@ -92,15 +92,15 @@ public class Sorting
             S[j + 1] = x;
         }
 
-        FileWriter fw = new FileWriter(file); //create file writer
-        BufferedWriter bw = new BufferedWriter(fw); //create buffer writer
+        //FileWriter fw = new FileWriter(file); //create file writer
+        //BufferedWriter bw = new BufferedWriter(fw); //create buffer writer
 
-        for (int i = 0; i < n; i++) { //overwrite lines with sorted values
-            bw.write(Integer.toString(S[i]));
-            bw.newLine();
-        }
+        //for (int i = 0; i < n; i++) { //overwrite lines with sorted values
+            //bw.write(Integer.toString(S[i]));
+            //bw.newLine();
+        //}
 
-        bw.close(); //close buffer writer
+        //bw.close(); //close buffer writer
     }
 
     public void insertionsortLinkedList(int n, File file) throws IOException{
@@ -130,19 +130,20 @@ public class Sorting
 
         }
 
-        FileWriter fw = new FileWriter(file); //create file writer
-        BufferedWriter bw = new BufferedWriter(fw); //create buffer writer
+        //FileWriter fw = new FileWriter(file); //create file writer
+        //BufferedWriter bw = new BufferedWriter(fw); //create buffer writer
 
-        for (int i = 0; i < n; i++) { //overwrite lines with sorted values
-            bw.write(Integer.toString(S.getElementAt(i)));
-            bw.newLine();
-        }
+        //for (int i = 0; i < n; i++) { //overwrite lines with sorted values
+          //  bw.write(Integer.toString(S.getElementAt(i)));
+            //bw.newLine();
+        //}
 
-        bw.close(); //close buffer writer
+        //bw.close(); //close buffer writer
 
     }
 
     public void mergeSort(int n, File file) throws IOException{
+        
         if (n > 1) {
             int h = n / 2;
             int m = n - h;
