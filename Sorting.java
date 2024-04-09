@@ -118,6 +118,7 @@ public class Sorting
             if (S.head == null || S.head.next == null){
                 return;
             }
+
             Node sorted = null;
             Node current = S.head;
             while (current != null) {
@@ -199,7 +200,22 @@ public class Sorting
         bReader.close();
 
         Sorting sorter = new Sorting();
+        long start = System.nanoTime();
         sorter.mergeSort(lines, file);
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+
+        Sorting sorter2 = new Sorting();
+        long start2 = System.nanoTime();
+        sorter2.insertionsortArray(lines, file);
+        long finish2 = System.nanoTime();
+        long timeElapsed2 = finish2 - start2;
+
+        Sorting sorter3 = new Sorting();
+        long start3 = System.nanoTime();
+        sorter3.insertionsortLinkedList(lines, file);
+        long finish3 = System.nanoTime();
+        long timeElapsed3 = finish3 - start3;
 
         FileReader sortedReader = new FileReader(file);
         BufferedReader sortedBReader = new BufferedReader(sortedReader);
@@ -207,6 +223,9 @@ public class Sorting
         while ((line = sortedBReader.readLine()) != null) {
             System.out.println(line);
         }
+        System.out.println("Merge Sort " + timeElapsed + " nanoseconds");
+        System.out.println("Insertion Array " + timeElapsed2 + " nanoseconds");
+        System.out.println("Insertion Linked List " + timeElapsed3 + " nanoseconds");
         sortedReader.close();
         sortedBReader.close();
 
