@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class Sorting
@@ -11,7 +9,8 @@ public class Sorting
         if (sorted == null || sorted.data >= newNode.data) { 
             newNode.next = sorted;
             return newNode;
-        } else {
+        } 
+        else {
             Node current = sorted;
             while (current.next != null && current.next.data < newNode.data) {
                 current = current.next;
@@ -21,53 +20,32 @@ public class Sorting
             return sorted;
         }
     }
-     
-    public void merge(File outFile, File leftFile, File rightFile, int h, int m) throws IOException { //helper method
-        //BufferedWriter writer = new BufferedWriter(new FileWriter(outFile)); //create necessary objects
-        BufferedReader leftReader = new BufferedReader(new FileReader(leftFile));
-        BufferedReader rightReader = new BufferedReader(new FileReader(rightFile));
 
-        String leftLine = leftReader.readLine();
-        String rightLine = rightReader.readLine();
-        int i = 0;
-        int j = 0;
-        while (i < h && j < m) {
-            int leftValue = Integer.parseInt(leftLine);
-            int rightValue = Integer.parseInt(rightLine);
-
-            if (leftValue <= rightValue) {
-                    //writer.write(Integer.toString(leftValue));
-                    //writer.newLine();
-                    leftLine = leftReader.readLine();
-                    i++;
-            } 
-            else {
-                //writer.write(Integer.toString(rightValue));
-                //writer.newLine();
-                rightLine = rightReader.readLine();
-                j++;
+    private void merge(int[] array, int start, int mid, int end) {
+        int[] temp = new int[end - start + 1];
+        int i = start, j = mid + 1, k = 0;
+    
+        while (i <= mid && j <= end) {
+            if (array[i] <= array[j]) {
+                temp[k++] = array[i++];
+            } else {
+                temp[k++] = array[j++];
             }
         }
-
-        // Write remaining lines from leftFile
-        while (leftLine != null) {
-            //writer.write(leftLine);
-            //writer.newLine();
-            leftLine = leftReader.readLine();
+    
+        while (i <= mid) {
+            temp[k++] = array[i++];
         }
-
-        // Write remaining lines from rightFile
-        while (rightLine != null) {
-            //writer.write(rightLine);
-            //writer.newLine();
-            rightLine = rightReader.readLine();
+    
+        while (j <= end) {
+            temp[k++] = array[j++];
         }
-
-        //writer.close();
-        leftReader.close();
-        rightReader.close();
+    
+        for (i = start, k = 0; i <= end; i++, k++) {
+            array[i] = temp[k];
+        }
     }
-
+    
     public void insertionsortArray(int n, File file)  throws IOException{
 
         FileReader fr = new FileReader(file); //create file reader
@@ -82,6 +60,7 @@ public class Sorting
 
         br.close(); //close buffer reader
 
+        long start = System.nanoTime();
         for (int i = 1; i < n; i++) { //implementation of insertion sort
             int x = S[i];
             int j = i - 1;
@@ -91,16 +70,10 @@ public class Sorting
             }
             S[j + 1] = x;
         }
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+        System.out.println("Insertion w/ Arrays " + timeElapsed + " nanoseconds");
 
-        //FileWriter fw = new FileWriter(file); //create file writer
-        //BufferedWriter bw = new BufferedWriter(fw); //create buffer writer
-
-        //for (int i = 0; i < n; i++) { //overwrite lines with sorted values
-            //bw.write(Integer.toString(S[i]));
-            //bw.newLine();
-        //}
-
-        //bw.close(); //close buffer writer
     }
 
     public void insertionsortLinkedList(int n, File file) throws IOException{
@@ -114,121 +87,70 @@ public class Sorting
 
         br.close(); //close buffer reader
 
-        for(int i = 0; i < n; i++){ //insertion sort implementation
-            if (S.head == null || S.head.next == null){
-                return;
-            }
+        long start = System.nanoTime();
 
-            Node sorted = null;
-            Node current = S.head;
-            while (current != null) {
-                Node next = current.next;
-                sorted = sortedInsert(sorted, current);
-                current = next;
-            }
-            S.head = sorted;
-
+        if (S.head == null || S.head.next == null) {
+            return; // Exit if the list is empty or has only one element
         }
-
-        //FileWriter fw = new FileWriter(file); //create file writer
-        //BufferedWriter bw = new BufferedWriter(fw); //create buffer writer
-
-        //for (int i = 0; i < n; i++) { //overwrite lines with sorted values
-          //  bw.write(Integer.toString(S.getElementAt(i)));
-            //bw.newLine();
-        //}
-
-        //bw.close(); //close buffer writer
+        
+        Node sorted = null;
+        Node current = S.head;
+        while (current != null) {
+            Node next = current.next;
+            sorted = sortedInsert(sorted, current);
+            current = next;
+        }
+        S.head = sorted;
+        
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+        System.out.println("Insertion w/ LL " + timeElapsed + " nanoseconds");
 
     }
 
-    public void mergeSort(int n, File file) throws IOException{
-        
-        if (n > 1) {
-            int h = n / 2;
-            int m = n - h;
-
-            // Create temporary files for left and right halves, as well as app. file readers / writers
-            File leftFile = File.createTempFile("left", ".txt");
-            File rightFile = File.createTempFile("right", ".txt");
-
-            BufferedWriter leftWriter = new BufferedWriter(new FileWriter(leftFile));
-            BufferedWriter rightWriter = new BufferedWriter(new FileWriter(rightFile));
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
-            // Split the original file into left and right halves
-            int count = 0;
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (count < h) {
-                    leftWriter.write(line);
-                    leftWriter.newLine();
-                } else {
-                    rightWriter.write(line);
-                    rightWriter.newLine();
-                }
-                count++;
-            }
-
-            leftWriter.close();
-            rightWriter.close();
-            br.close();
-
-            // Recursively sort left and right halves
-            mergeSort(h, leftFile);
-            mergeSort(m, rightFile);
-
-            // Merge the sorted halves
-            merge(file, leftFile, rightFile, h, m);
-
-            // Delete temporary files
-            leftFile.delete();
-            rightFile.delete();
+    public void mergeSort(int[] array, int start, int end) {
+        if (start < end) {
+            int mid = (start + end) / 2;
+            mergeSort(array, start, mid);
+            mergeSort(array, mid + 1, end);
+            merge(array, start, mid, end);
         }
-
     }
 
     public static void main(String[] args) throws IOException{
-        File file = new File("test.txt"); 
+        File file = new File("datafiles/random5k.txt"); 
 
         FileReader reader = new FileReader(file);
         BufferedReader bReader = new BufferedReader(reader);
         int lines = 0;
+
         while (bReader.readLine() != null){
             lines++;
         }
+
+        int[] S = new int[lines]; //n is size of file (# of lines)
+        int m = 0; 
+        for (String line = bReader.readLine(); line != null; line = bReader.readLine()) {
+            S[m] = Integer.parseInt(line.replace(" ", "")); //store each line into an array
+            m++;
+        }
+
+
         reader.close();
         bReader.close();
 
+
         Sorting sorter = new Sorting();
+        sorter.insertionsortArray(lines, file);
+        sorter.insertionsortLinkedList(lines, file);
+
         long start = System.nanoTime();
-        sorter.mergeSort(lines, file);
+        sorter.mergeSort(S, 0, lines-1);
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
 
-        Sorting sorter2 = new Sorting();
-        long start2 = System.nanoTime();
-        sorter2.insertionsortArray(lines, file);
-        long finish2 = System.nanoTime();
-        long timeElapsed2 = finish2 - start2;
-
-        Sorting sorter3 = new Sorting();
-        long start3 = System.nanoTime();
-        sorter3.insertionsortLinkedList(lines, file);
-        long finish3 = System.nanoTime();
-        long timeElapsed3 = finish3 - start3;
-
-        FileReader sortedReader = new FileReader(file);
-        BufferedReader sortedBReader = new BufferedReader(sortedReader);
-        String line;
-        while ((line = sortedBReader.readLine()) != null) {
-            System.out.println(line);
-        }
         System.out.println("Merge Sort " + timeElapsed + " nanoseconds");
-        System.out.println("Insertion Array " + timeElapsed2 + " nanoseconds");
-        System.out.println("Insertion Linked List " + timeElapsed3 + " nanoseconds");
-        sortedReader.close();
-        sortedBReader.close();
+
 
     }
 
