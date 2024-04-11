@@ -5,18 +5,25 @@ import java.io.IOException;
 
 public class SortingBasicOps
 {
+    int sortedInsertOps = 0;
+    int insertionsortArrayOps = 0;
+    int insertionsortLinkedListOps = 0;
     public Node sortedInsert(Node sorted, Node newNode) { //helper method
         if (sorted == null || sorted.data >= newNode.data) { 
             newNode.next = sorted;
+            sortedInsertOps += 4; // 3 for if statement, 1 for return
             return newNode;
         } 
         else {
             Node current = sorted;
+            sortedInsertOps += 3; //from the original if
             while (current.next != null && current.next.data < newNode.data) {
                 current = current.next;
+                sortedInsertOps += 3; //for each run of the while loop
             }
             newNode.next = current.next;
             current.next = newNode;
+            sortedInsertOps += 1; //another for return statement
             return sorted;
         }
     }
@@ -47,7 +54,6 @@ public class SortingBasicOps
     }
     
     public void insertionsortArray(int n, File file)  throws IOException{
-        int basicOperations = 0;
         FileReader fr = new FileReader(file); //create file reader
         BufferedReader br = new BufferedReader(fr); //create a buffer reader
 
@@ -66,19 +72,20 @@ public class SortingBasicOps
         for (int i = 1; i < n; i++) { //implementation of insertion sort
             int x = S[i];
             int j = i - 1;
+            insertionsortArrayOps++;
             while (j >= 0 && S[j] > x) { 
                 S[j + 1] = S[j];
                 j--;
-                basicOperations += 2;
+                insertionsortArrayOps += 4; //2 for while loop ops, 2 for ops bellow it
             }
             S[j + 1] = x;
-            basicOperations += 1;
+            insertionsortArrayOps += 1;
         }
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
+        System.out.println("poop");
         System.out.println("Insertion w/ Arrays " + timeElapsed + " nanoseconds");
-        System.out.println("Number of Basic Operations: " + basicOperations);
-
+        System.out.println("Number of Basic Operations: " + insertionsortArrayOps);
     }
 
     public void insertionsortLinkedList(int n, File file) throws IOException{
@@ -93,25 +100,27 @@ public class SortingBasicOps
         br.close(); //close buffer reader
 
         long start = System.nanoTime();
-        int operationCount = 0;
+        insertionsortLinkedListOps += 3; //adds 3 for if statment
         if (S.head == null || S.head.next == null) {
+            insertionsortLinkedListOps += 1; //another 1 for the return statement
             return; // Exit if the list is empty or has only one element
         }
         
         Node sorted = null;
         Node current = S.head;
         while (current != null) {
+            insertionsortLinkedListOps += 1; // for while check
             Node next = current.next;
             sorted = sortedInsert(sorted, current);
+            insertionsortLinkedListOps += sortedInsertOps; //for the sorted insert ops
             current = next;
-            operationCount += 2;
         }
         S.head = sorted;
         
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
         System.out.println("Insertion w/ LL " + timeElapsed + " nanoseconds");
-        System.out.println("Number of basic operations: " + operationCount);
+        System.out.println("Number of basic operations: " + insertionsortLinkedListOps);
     }
 
     public void mergeSort(int[] array, int start, int end) {
