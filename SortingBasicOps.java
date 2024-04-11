@@ -6,7 +6,6 @@ import java.io.IOException;
 public class SortingBasicOps
 {
     int sortedInsertOps = 0;
-    int insertionsortArrayOps = 0;
     int insertionsortLinkedListOps = 0;
     public Node sortedInsert(Node sorted, Node newNode) { //helper method
         if (sorted == null || sorted.data >= newNode.data) { 
@@ -53,10 +52,10 @@ public class SortingBasicOps
         }
     }
     
-    public void insertionsortArray(int n, File file)  throws IOException{
+    public static void insertionsortArray(int n, File file)  throws IOException{
         FileReader fr = new FileReader(file); //create file reader
         BufferedReader br = new BufferedReader(fr); //create a buffer reader
-
+        int insertionsortArrayOps = 0;
         int[] S = new int[n]; //n is size of file (# of lines)
         int m = 0; 
         for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -70,6 +69,7 @@ public class SortingBasicOps
 
         long start = System.nanoTime();
         for (int i = 1; i < n; i++) { //implementation of insertion sort
+            
             int x = S[i];
             int j = i - 1;
             insertionsortArrayOps++;
@@ -83,12 +83,12 @@ public class SortingBasicOps
         }
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
-        System.out.println("poop");
         System.out.println("Insertion w/ Arrays " + timeElapsed + " nanoseconds");
-        System.out.println("Number of Basic Operations: " + insertionsortArrayOps);
+        System.out.println("Number of Basic Operations (Insertion w/ Arrays): " + insertionsortArrayOps);
     }
 
     public void insertionsortLinkedList(int n, File file) throws IOException{
+
         FileReader fr = new FileReader(file); //create file reader
         BufferedReader br = new BufferedReader(fr); //create a buffer reader
 
@@ -120,7 +120,7 @@ public class SortingBasicOps
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
         System.out.println("Insertion w/ LL " + timeElapsed + " nanoseconds");
-        System.out.println("Number of basic operations: " + insertionsortLinkedListOps);
+        System.out.println("Number of Basic Operations (Insertion w/ LL): " + insertionsortLinkedListOps);
     }
 
     public void mergeSort(int[] array, int start, int end) {
@@ -155,8 +155,8 @@ public class SortingBasicOps
         bReader.close();
 
 
-        Sorting sorter = new Sorting();
-        sorter.insertionsortArray(lines, file);
+        SortingBasicOps sorter = new SortingBasicOps();
+        insertionsortArray(lines, file);
         sorter.insertionsortLinkedList(lines, file);
 
         long start = System.nanoTime();
@@ -165,7 +165,6 @@ public class SortingBasicOps
         long timeElapsed = finish - start;
 
         System.out.println("Merge Sort " + timeElapsed + " nanoseconds");
-
 
     }
 
