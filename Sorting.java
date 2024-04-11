@@ -5,18 +5,25 @@ import java.io.IOException;
 
 public class Sorting
 {
+    private static long mergeCount;
+    private static long insertArraysCount;
+    private static long insertLLCount;
+
     public Node sortedInsert(Node sorted, Node newNode) { //helper method
         if (sorted == null || sorted.data >= newNode.data) { 
             newNode.next = sorted;
+            insertLLCount += 4;
             return newNode;
         } 
         else {
             Node current = sorted;
             while (current.next != null && current.next.data < newNode.data) {
                 current = current.next;
+                insertLLCount += 3;
             }
             newNode.next = current.next;
             current.next = newNode;
+            insertLLCount ++;
             return sorted;
         }
     }
@@ -25,24 +32,29 @@ public class Sorting
         int[] temp = new int[end - start + 1];
         int i = start, j = mid + 1, k = 0;
     
+        mergeCount += 3; // Account for end - start, then the +1, then the mid + 1
         while (i <= mid && j <= end) {
             if (array[i] <= array[j]) {
                 temp[k++] = array[i++];
             } else {
                 temp[k++] = array[j++];
             }
+            mergeCount += 6;
         }
     
         while (i <= mid) {
             temp[k++] = array[i++];
+            mergeCount += 3;
         }
     
         while (j <= end) {
             temp[k++] = array[j++];
+            mergeCount += 3;
         }
     
         for (i = start, k = 0; i <= end; i++, k++) {
             array[i] = temp[k];
+            mergeCount +=3;
         }
     }
     
@@ -60,19 +72,24 @@ public class Sorting
 
         br.close(); //close buffer reader
 
+        insertArraysCount = 0;
         long start = System.nanoTime();
         for (int i = 1; i < n; i++) { //implementation of insertion sort
             int x = S[i];
             int j = i - 1;
+            insertArraysCount += 3;
             while (j >= 0 && S[j] > x) { 
                 S[j + 1] = S[j];
                 j--;
+                insertArraysCount += 5;
             }
             S[j + 1] = x;
+            insertArraysCount ++;
         }
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
         System.out.println("Insertion w/ Arrays " + timeElapsed + " nanoseconds");
+        System.out.println("Insertion w/ Arrays Count " + insertArraysCount);
 
     }
 
@@ -87,9 +104,11 @@ public class Sorting
 
         br.close(); //close buffer reader
 
+        insertLLCount = 0;
         long start = System.nanoTime();
 
         if (S.head == null || S.head.next == null) {
+            insertLLCount ++;
             return; // Exit if the list is empty or has only one element
         }
         
@@ -99,19 +118,23 @@ public class Sorting
             Node next = current.next;
             sorted = sortedInsert(sorted, current);
             current = next;
+            insertLLCount += 1;
         }
         S.head = sorted;
         
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
         System.out.println("Insertion w/ LL " + timeElapsed + " nanoseconds");
+        System.out.println("Insertion w/ LL count " + insertLLCount);
 
     }
 
     public void mergeSort(int[] array, int start, int end) {
         if (start < end) {
             int mid = (start + end) / 2;
+            mergeCount += 3; // Account for comparison, start + end, and /2
             mergeSort(array, start, mid);
+            mergeCount += 1; // Account for mid + 1
             mergeSort(array, mid + 1, end);
             merge(array, start, mid, end);
         }
@@ -147,12 +170,14 @@ public class Sorting
         sorter.insertionsortArray(lines, file);
         sorter.insertionsortLinkedList(lines, file);
 
+        mergeCount = 0;
         long start = System.nanoTime();
         sorter.mergeSort(S, 0, lines-1);
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
 
         System.out.println("Merge Sort " + timeElapsed + " nanoseconds");
+        System.out.println("Merge Sort Count " + mergeCount);
 
         counter++;
         }
