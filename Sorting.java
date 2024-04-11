@@ -118,7 +118,10 @@ public class Sorting
     }
 
     public static void main(String[] args) throws IOException{
-        File file = new File("datafiles/random5k.txt"); 
+        String[] fileNames = {"inorder5k.txt", "inorder10k.txt", "inorder100k.txt", "random5k.txt", "random10k.txt", "random100k.txt", "rev5k.txt", "rev10k.txt", "rev100k.txt"};
+        int counter = 0;
+        for (int index = 0; index < fileNames.length; index++ ){
+        File file = new File("datafiles/" + fileNames[counter]); 
 
         FileReader reader = new FileReader(file);
         BufferedReader bReader = new BufferedReader(reader);
@@ -151,7 +154,8 @@ public class Sorting
 
         System.out.println("Merge Sort " + timeElapsed + " nanoseconds");
 
-
+        counter++;
+        }
     }
 
 }
